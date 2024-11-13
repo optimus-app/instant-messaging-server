@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 public class CreateChatRoomDTO {
-    private String roomName;
+    private String roomTitle;
     private List<String> members;
 }
