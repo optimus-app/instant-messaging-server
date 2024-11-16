@@ -1,9 +1,6 @@
 package java.org.fyp24064.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,43 +8,48 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name="chat_room")
 public class ChatRoom implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int roomId;
+
     private String roomTitle;
+
+    @ElementCollection
     private List<String> members;
+
     private String lastMessage;
+
+    @OneToMany(mappedBy="chatRoom", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<ChatMessage> messages;
 
     private ChatRoom(ChatRoomBuilder builder) {
-        this.id = builder.id;
+        this.roomId = builder.roomId;
         this.roomTitle = builder.roomTitle;
         this.members = builder.members;
         this.lastMessage = builder.lastMessage;
         this.messages = builder.messages;
     }
+
+    public void addMessage(ChatMessage chatMessage) {
+        messages.add(chatMessage);
+    }
     public static ChatRoomBuilder getBuilder() {
         return new ChatRoomBuilder();
     }
     public static class ChatRoomBuilder {
-        private UUID id;
+        private int roomId;
         private String roomTitle;
         private List<String> members;
         private String lastMessage;
         private List<ChatMessage> messages;
-
-        public ChatRoomBuilder setId(UUID id) {
-            this.id = id;
-            return this;
-        }
 
         public ChatRoomBuilder setRoomTitle(String roomTitle) {
             this.roomTitle = roomTitle;
@@ -72,6 +74,5 @@ public class ChatRoom implements Serializable {
         public ChatRoom build() {
             return new ChatRoom(this);
         }
-
     }
 }

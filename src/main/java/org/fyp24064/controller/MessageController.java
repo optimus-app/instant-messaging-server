@@ -1,20 +1,17 @@
 package java.org.fyp24064.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.org.fyp24064.model.ChatMessage;
 import java.org.fyp24064.model.ChatMessagePayload;
 import java.org.fyp24064.model.ChatRoom;
 import java.org.fyp24064.model.dto.CreateChatRoomDTO;
 import java.org.fyp24064.repository.ChatRoomRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/chat")
@@ -37,7 +34,6 @@ public class MessageController {
         // TODO: Create entities for chat rooms
         ChatRoom chatRoom = ChatRoom.getBuilder()
                 .setRoomTitle(chatRoomDTO.getRoomTitle())
-                .setId(UUID.randomUUID())
                 .setLastMessage("")
                 .setMembers(chatRoomDTO.getMembers())
                 .setMessages(new ArrayList<>())
@@ -55,8 +51,18 @@ public class MessageController {
      */
     @MessageMapping(value = "/chat/message")
     public void sendMessage(ChatMessagePayload messagePayload) {
-        String chatRoomId = messagePayload.getRoomId();
+        // TODO: Save Message
+        int chatRoomId = messagePayload.getRoomId();
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(chatRoomId);
+        ChatMessage chatMessage = ChatMessage.getBuilder()
+                .setChatRoom(chatRoom)
+                .setContent(messagePayload.getContent())
+                .setSender(messagePayload.getSender())
+                .build();
+        chatRoom.addMessage(chatMessage);
         String payload = String.format("/{%s}/new_message", chatRoomId);
+
+
         messagingTemplate.convertAndSend(payload, messagePayload);
     }
 
@@ -67,8 +73,9 @@ public class MessageController {
     }
 
     @GetMapping(path = "/{roomId}/messages")
-    public ResponseEntity<?> getChatMessages(@PathVariable("roomId") Long roomId) {
-        // TODO: Add logic on retrieving data in the chat room
-        return new ResponseEntity<>("Returning...", HttpStatus.FOUND);
+    public List<ChatMessage> getChatMessages(@PathVariable("roomId") int roomId) {
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
+        return chatRoom.getMessages();
     }
+
 }
