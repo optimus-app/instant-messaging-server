@@ -55,6 +55,14 @@ public class MessageController {
         return ResponseEntity.ok("ChatRoom created!");
     }
 
+    @PostMapping(value = "/test/send/{user}")
+    public ResponseEntity<String> testSendMessage(@PathVariable("user") String user) {
+       String payload = String.format("/subscribe/chat/messages/%s", user);
+       System.out.println(payload);
+       messagingTemplate.convertAndSend(payload, user);
+       return ResponseEntity.ok("Message sent");
+    }
+
     /**
      * This function does the following:
      * - Save the message in the database
@@ -64,14 +72,6 @@ public class MessageController {
      * @return
      */
 
-    @PostMapping(value = "/test/send/{user}")
-    public ResponseEntity<String> testSendMessage(@PathVariable("user") String user) {
-       String payload = String.format("/subscribe/chat/messages/%s", user);
-       System.out.println(payload);
-       messagingTemplate.convertAndSend(payload, user);
-       return ResponseEntity.ok("Message sent");
-    }
-
     @MessageMapping(value = "/message")
     public ResponseEntity<String> sendMessage(ChatMessagePayload messagePayload) {
         String payload = chatService.forwardMessage(messagePayload);
@@ -79,13 +79,13 @@ public class MessageController {
         return ResponseEntity.ok("Message sent");
     }
 
-    @GetMapping(path = "/{userId}/chatRoom")
+    @GetMapping(path = "/chatRoom/{userId}")
     public List<ChatRoom> getChatRoomForUser(@PathVariable("userId") String userId) {
         // TODO: Add findAllByUserId method, add implementation
         return chatRoomRepository.findAllByUserId(userId);
     }
 
-    @GetMapping(path = "/{roomId}/messages")
+    @GetMapping(path = "/messages/{roomId}")
     public List<ChatMessage> getChatMessages(@PathVariable("roomId") int roomId) {
         return chatRoomRepository.findByRoomId(roomId).getMessages();
     }

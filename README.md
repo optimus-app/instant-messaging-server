@@ -57,3 +57,15 @@ If the clients want to send a message to a person, include the payload in the fo
 ```
 POST http://localhost:8080/chat/message
 ```
+
+If the clients want to retrieve all the groups that the user is a part of, the relevant endpoint would be:
+
+```
+GET http://localhost:8080/chat/chatRoom/<username>
+```
+
+If the clients want to retrieve the messages of the recent 10 messages of a chat channel (i.e. user or group), the relevant endpoint would be:
+
+```
+GET http://localhost:8080/chat/messages/<chatChannelId>
+```
