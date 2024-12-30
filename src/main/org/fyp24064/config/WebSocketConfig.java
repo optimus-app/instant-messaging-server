@@ -1,4 +1,4 @@
-package java.org.fyp24064.config;
+package org.fyp24064.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

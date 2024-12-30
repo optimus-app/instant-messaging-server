@@ -1,4 +1,4 @@
-package java.org.fyp24064.controller;
+package org.fyp24064.controller;
 
 public class TestPublisherController {
 }

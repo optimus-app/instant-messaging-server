@@ -1,4 +1,4 @@
-package java.org.fyp24064.model;
+package org.fyp24064.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

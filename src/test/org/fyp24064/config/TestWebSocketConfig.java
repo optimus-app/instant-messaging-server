@@ -1,4 +1,4 @@
-package java.org.fyp24064.config;
+package org.fyp24064.config;
 
 public class TestWebSocketConfig {
 }
