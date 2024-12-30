@@ -1,9 +1,6 @@
-package java.org.fyp24064.model;
+package org.fyp24064.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -19,14 +16,18 @@ public class ChatMessage {
     private UUID id;
     private String content;
     private String sender;
-    private String roomId;
+
+    @ManyToOne
+    @JoinColumn(name="room_id", nullable = false)
+    private ChatRoom chatRoom;
 
     private ChatMessage(ChatMessageBuilder builder) {
+        this.id = builder.id;
         this.content = builder.content;
         this.sender = builder.sender;
-        this.id = builder.id;
-        this.roomId = builder.roomId;
+        this.chatRoom = builder.chatRoom;
     }
+
     public static ChatMessageBuilder getBuilder() {
         return new ChatMessageBuilder();
     }
@@ -34,12 +35,8 @@ public class ChatMessage {
         private UUID id;
         private String content;
         private String sender;
-        private String roomId;
+        private ChatRoom chatRoom;
 
-        public ChatMessageBuilder setId(UUID id) {
-            this.id = id;
-            return this;
-        }
         public ChatMessageBuilder setContent(String content) {
             this.content = content;
             return this;
@@ -48,8 +45,8 @@ public class ChatMessage {
             this.sender = sender;
             return this;
         }
-        public ChatMessageBuilder setRoomId(String roomId) {
-            this.roomId = roomId;
+        public ChatMessageBuilder setChatRoom(ChatRoom chatRoom) {
+            this.chatRoom = chatRoom;
             return this;
         }
 
