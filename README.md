@@ -13,8 +13,14 @@ This is a server dedicated to the terminal for instant messaging. It allows the 
 - Query the messages of the recent 10 messages of a chat channel (i.e. user or group)
 - (Client-side) Establish a connection with the server, and subscribe to a path to receive messages (i.e. `/chat/messages/<username>`)
 
+## Dependencies
+For python-client, please install:
+```bash
+$ pip install stomp.py websocket-client
+```
 ## Project Structure
 
+- `python-client/main.py`: Contains a mock client implementation of the server. It connects with the websocket server of this project and sends messages to the server to test the server functionalities.
 - `controller/`: Contains the controllers for the server, handles all the web requests and responses. For example, if a GET request is made to `/chat/messages/<username>`, the controller will handle the request and return the messages of the user. 
 - `service/`: Contains the services for the server, handles all the business logic. For example, if a user wants to send a message to another user, the controller will pick up the request, and call the service functions for the implementation of the logic.
 - `repository/` : Contains the repository for the server, handles all the database operations. For example, if a user wants to send a message to another user, the service will call the repository functions to store the message in the database.
