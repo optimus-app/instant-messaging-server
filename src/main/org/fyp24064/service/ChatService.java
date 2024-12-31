@@ -35,9 +35,10 @@ public class ChatService {
                 .setSender(messagePayload.getSender())
                 .build();
         chatRoom.addMessage(chatMessage);
-        // TODO: Support group messagingTemplate send
-        // Return type should be List<String>
-        return String.format("/publish/chat/messages/{%s}", chatRoomId);
+        chatRoomRepository.save(chatRoom);
+
+        // TODO: Return a list of userIds that are in the chat room
+        return String.format("/subscribe/chat/messages/%s", chatRoomId);
 
     }
 }

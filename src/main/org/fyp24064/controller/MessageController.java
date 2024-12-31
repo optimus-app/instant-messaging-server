@@ -1,6 +1,5 @@
 package org.fyp24064.controller;
 
-import org.apache.coyote.Response;
 import org.fyp24064.model.ChatMessage;
 import org.fyp24064.model.ChatMessagePayload;
 import org.fyp24064.model.ChatRoom;
@@ -10,7 +9,6 @@ import org.fyp24064.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,8 +47,9 @@ public class MessageController {
      * @param ChatRoomDTO
      * @return
      */
-    @PostMapping(path = "/")
+    @PostMapping(path = "/createRoom")
     public ResponseEntity<String> createChatRoom(@RequestBody CreateChatRoomDTO chatRoomDTO) {
+        System.out.println(chatRoomDTO.getMembers());
         chatService.createChatRoom(chatRoomDTO);
         return ResponseEntity.ok("ChatRoom created!");
     }
@@ -58,7 +57,6 @@ public class MessageController {
     @PostMapping(value = "/test/send/{user}")
     public ResponseEntity<String> testSendMessage(@PathVariable("user") String user) {
        String payload = String.format("/subscribe/chat/messages/%s", user);
-       System.out.println(payload);
        messagingTemplate.convertAndSend(payload, user);
        return ResponseEntity.ok("Message sent");
     }
@@ -72,21 +70,26 @@ public class MessageController {
      * @return
      */
 
-    @MessageMapping(value = "/message")
-    public ResponseEntity<String> sendMessage(ChatMessagePayload messagePayload) {
+    @PostMapping(value = "/message")
+    public ResponseEntity<String> sendMessage(@RequestBody ChatMessagePayload messagePayload) {
         String payload = chatService.forwardMessage(messagePayload);
+        // TODO: messageTemplate to convert and send one by one, to each user in /subscribe/chat/messages/{userId}
         messagingTemplate.convertAndSend(payload, messagePayload);
         return ResponseEntity.ok("Message sent");
     }
 
+
     @GetMapping(path = "/chatRoom/{userId}")
     public List<ChatRoom> getChatRoomForUser(@PathVariable("userId") String userId) {
-        // TODO: Add findAllByUserId method, add implementation
+        // TODO: Create DTO on only transferring the roomId, roomTitle, lastMessage
+        System.out.println(userId);
         return chatRoomRepository.findAllByUserId(userId);
     }
 
+    // Done
     @GetMapping(path = "/messages/{roomId}")
     public List<ChatMessage> getChatMessages(@PathVariable("roomId") int roomId) {
+        System.out.println(roomId);
         return chatRoomRepository.findByRoomId(roomId).getMessages();
     }
 

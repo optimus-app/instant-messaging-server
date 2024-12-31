@@ -1,5 +1,6 @@
 package org.fyp24064.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,11 +24,14 @@ public class ChatRoom implements Serializable {
     private String roomTitle;
 
     @ElementCollection
+    @CollectionTable(name = "chat_room_members", joinColumns = @JoinColumn(name = "room_id"))
+    @Column(name = "member")
     private List<String> members;
 
     private String lastMessage;
 
     @OneToMany(mappedBy="chatRoom", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @JsonManagedReference
     private List<ChatMessage> messages;
 
     private ChatRoom(ChatRoomBuilder builder) {
