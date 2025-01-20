@@ -27,7 +27,7 @@ public class ChatRoom implements Serializable {
     @CollectionTable(name = "chat_room_members", joinColumns = @JoinColumn(name = "room_id"))
     @Column(name = "member")
     private List<String> members;
-
+    // This is unused, should be removed sometime
     private String lastMessage;
 
     @OneToMany(mappedBy="chatRoom", cascade=CascadeType.ALL, fetch=FetchType.LAZY)

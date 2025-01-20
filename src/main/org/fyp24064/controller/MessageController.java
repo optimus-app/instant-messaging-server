@@ -8,7 +8,6 @@ import org.fyp24064.repository.ChatRoomRepository;
 import org.fyp24064.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,15 +50,20 @@ public class MessageController {
     public ResponseEntity<String> createChatRoom(@RequestBody CreateChatRoomDTO chatRoomDTO) {
         System.out.println(chatRoomDTO.getMembers());
         chatService.createChatRoom(chatRoomDTO);
+        List<String> roomMembers = chatRoomDTO.getMembers();
+        for (String member : roomMembers) {
+            String path = String.format("/subscribe/chat/creation/%s", member);
+            messagingTemplate.convertAndSend(path, chatRoomDTO);
+        }
         return ResponseEntity.ok("ChatRoom created!");
     }
 
-    @PostMapping(value = "/test/send/{user}")
-    public ResponseEntity<String> testSendMessage(@PathVariable("user") String user) {
-       String payload = String.format("/subscribe/chat/messages/%s", user);
-       messagingTemplate.convertAndSend(payload, user);
-       return ResponseEntity.ok("Message sent");
-    }
+//    @PostMapping(value = "/test/send/{user}")
+//    public ResponseEntity<String> testSendMessage(@PathVariable("user") String user) {
+//       String payload = String.format("/subscribe/chat/messages/%s", user);
+//       messagingTemplate.convertAndSend(payload, user);
+//       return ResponseEntity.ok("Message sent");
+//    }
 
     /**
      * This function does the following:
@@ -72,9 +76,11 @@ public class MessageController {
 
     @PostMapping(value = "/message")
     public ResponseEntity<String> sendMessage(@RequestBody ChatMessagePayload messagePayload) {
-        String payload = chatService.forwardMessage(messagePayload);
-        // TODO: messageTemplate to convert and send one by one, to each user in /subscribe/chat/messages/{userId}
-        messagingTemplate.convertAndSend(payload, messagePayload);
+        List<String> payload = chatService.forwardMessage(messagePayload);
+        for (String p : payload) {
+            System.out.println(p);
+            messagingTemplate.convertAndSend(p, messagePayload);
+        }
         return ResponseEntity.ok("Message sent");
     }
 
