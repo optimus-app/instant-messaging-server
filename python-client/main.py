@@ -29,9 +29,9 @@ def on_open(ws):
     print("Sent STOMP CONNECT frame.")
 
     # STOMP SUBSCRIBE frame (Subscribe to a channel, e.g., /subscribe/1/new_message)
-    subscribe_frame = "SUBSCRIBE\ndestination:/subscribe/chat/messages/2\nid:1\nack:auto\n\n\0"
+    subscribe_frame = "SUBSCRIBE\ndestination:/subscribe/chat/messages/1\nid:1\nack:auto\n\n\0"
     ws.send(subscribe_frame)
-    print("Subscribed to /subscribe/chat/messages/2")
+    print("Subscribed to /subscribe/chat/messages/1")
 
     # Send a test message after subscribing
     time.sleep(1)

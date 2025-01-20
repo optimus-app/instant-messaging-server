@@ -1,5 +1,6 @@
 package org.fyp24064.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class ChatMessage {
 
     @ManyToOne
     @JoinColumn(name="room_id", nullable = false)
+    @JsonBackReference // Without this, there will be circular reference
     private ChatRoom chatRoom;
 
     private ChatMessage(ChatMessageBuilder builder) {

@@ -1,5 +1,6 @@
 package org.fyp24064.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Getter
@@ -8,7 +9,6 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessagePayload {
     private String content;
-    private int id;
     private int roomId;
     private String sender;
 }
