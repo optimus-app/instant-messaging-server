@@ -5,6 +5,7 @@ import org.fyp24064.model.ChatRoom;
 import org.fyp24064.model.dto.CreateChatRoomDTO;
 import org.fyp24064.repository.ChatRoomRepository;
 import org.fyp24064.service.ChatService;
+import org.fyp24064.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,9 @@ public class MessageController {
 
     @Autowired
     private ChatService chatService;
+
+    @Autowired
+    private ChatRoomService chatRoomService;
 
     /**
      *
@@ -49,7 +53,7 @@ public class MessageController {
     @PostMapping(path = "/createRoom")
     public ResponseEntity<String> createChatRoom(@RequestBody CreateChatRoomDTO chatRoomDTO) {
         System.out.println(chatRoomDTO.getMembers());
-        chatService.createChatRoom(chatRoomDTO);
+        chatRoomService.createChatRoom(chatRoomDTO);
         List<String> roomMembers = chatRoomDTO.getMembers();
         for (String member : roomMembers) {
             String path = String.format("/subscribe/chat/creation/%s", member);
