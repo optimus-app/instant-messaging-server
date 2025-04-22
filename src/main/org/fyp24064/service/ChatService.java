@@ -18,7 +18,6 @@ public class ChatService {
     private static final String URL_PATH_BASE = "/subscribe/chat/messages/%s";
     @Autowired
     private ChatRoomRepository chatRoomRepository;
-    
     public List<String> forwardMessage(ChatMessagePayload messagePayload) {
         int chatRoomId = messagePayload.getRoomId();
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(chatRoomId);
