@@ -25,6 +25,7 @@ public class ChatService {
                 .setChatRoom(chatRoom)
                 .setContent(messagePayload.getContent())
                 .setSender(messagePayload.getSender())
+                .setTimestamp(messagePayload.getTimestamp())
                 .build();
         chatRoom.addMessage(chatMessage);
         chatRoomRepository.save(chatRoom);
