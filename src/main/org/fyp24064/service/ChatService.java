@@ -18,17 +18,6 @@ public class ChatService {
     private static final String URL_PATH_BASE = "/subscribe/chat/messages/%s";
     @Autowired
     private ChatRoomRepository chatRoomRepository;
-
-    public void createChatRoom(CreateChatRoomDTO chatRoomDTO) {
-        ChatRoom chatRoom = ChatRoom.getBuilder()
-                .setRoomTitle(chatRoomDTO.getRoomTitle())
-                .setLastMessage("")
-                .setMembers(chatRoomDTO.getMembers())
-                .setMessages(new ArrayList<>())
-                .build();
-        chatRoomRepository.save(chatRoom);
-    }
-
     public List<String> forwardMessage(ChatMessagePayload messagePayload) {
         int chatRoomId = messagePayload.getRoomId();
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(chatRoomId);

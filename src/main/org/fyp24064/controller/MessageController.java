@@ -1,12 +1,13 @@
 package org.fyp24064.controller;
 
-import org.fyp24064.model.ChatMessage;
 import org.fyp24064.model.ChatMessagePayload;
 import org.fyp24064.model.ChatRoom;
 import org.fyp24064.model.dto.CreateChatRoomDTO;
 import org.fyp24064.repository.ChatRoomRepository;
 import org.fyp24064.service.ChatService;
+import org.fyp24064.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,9 @@ public class MessageController {
 
     @Autowired
     private ChatService chatService;
+
+    @Autowired
+    private ChatRoomService chatRoomService;
 
     /**
      *
@@ -49,7 +53,7 @@ public class MessageController {
     @PostMapping(path = "/createRoom")
     public ResponseEntity<String> createChatRoom(@RequestBody CreateChatRoomDTO chatRoomDTO) {
         System.out.println(chatRoomDTO.getMembers());
-        chatService.createChatRoom(chatRoomDTO);
+        chatRoomService.createChatRoom(chatRoomDTO);
         List<String> roomMembers = chatRoomDTO.getMembers();
         for (String member : roomMembers) {
             String path = String.format("/subscribe/chat/creation/%s", member);
@@ -57,13 +61,6 @@ public class MessageController {
         }
         return ResponseEntity.ok("ChatRoom created!");
     }
-
-//    @PostMapping(value = "/test/send/{user}")
-//    public ResponseEntity<String> testSendMessage(@PathVariable("user") String user) {
-//       String payload = String.format("/subscribe/chat/messages/%s", user);
-//       messagingTemplate.convertAndSend(payload, user);
-//       return ResponseEntity.ok("Message sent");
-//    }
 
     /**
      * This function does the following:
@@ -81,7 +78,7 @@ public class MessageController {
             System.out.println(p);
             messagingTemplate.convertAndSend(p, messagePayload);
         }
-        return ResponseEntity.ok("Message sent");
+        return new ResponseEntity<String>("{\"message\": \"message sent\"}",HttpStatus.OK);
     }
 
 
@@ -94,9 +91,9 @@ public class MessageController {
 
     // Done
     @GetMapping(path = "/messages/{roomId}")
-    public List<ChatMessage> getChatMessages(@PathVariable("roomId") int roomId) {
+    public ChatRoom getChatMessages(@PathVariable("roomId") int roomId) {
         System.out.println(roomId);
-        return chatRoomRepository.findByRoomId(roomId).getMessages();
+        return chatRoomRepository.findByRoomId(roomId);
     }
 
 }
