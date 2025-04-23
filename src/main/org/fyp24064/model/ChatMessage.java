@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Getter
@@ -17,6 +18,7 @@ public class ChatMessage {
     private UUID id;
     private String content;
     private String sender;
+    private Instant timestamp;
 
     @ManyToOne
     @JoinColumn(name="room_id", nullable = false)
@@ -28,33 +30,47 @@ public class ChatMessage {
         this.content = builder.content;
         this.sender = builder.sender;
         this.chatRoom = builder.chatRoom;
+        this.timestamp = builder.timestamp;
     }
 
     public static ChatMessageBuilder getBuilder() {
         return new ChatMessageBuilder();
     }
+    
     public static class ChatMessageBuilder {
         private UUID id;
         private String content;
         private String sender;
         private ChatRoom chatRoom;
+        private Instant timestamp;
 
         public ChatMessageBuilder setContent(String content) {
             this.content = content;
             return this;
         }
+        
         public ChatMessageBuilder setSender(String sender) {
             this.sender = sender;
             return this;
         }
+        
         public ChatMessageBuilder setChatRoom(ChatRoom chatRoom) {
             this.chatRoom = chatRoom;
             return this;
         }
-
-        public ChatMessage build() {
-            return new ChatMessage(this);
+        
+        // Add setter for timestamp
+        public ChatMessageBuilder setTimestamp(Instant timestamp) {
+            this.timestamp = timestamp;
+            return this;
         }
 
+        public ChatMessage build() {
+            // If no timestamp provided, set to current time
+            if (this.timestamp == null) {
+                this.timestamp = Instant.now();
+            }
+            return new ChatMessage(this);
+        }
     }
 }

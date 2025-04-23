@@ -29,5 +29,6 @@ CREATE TABLE chat_message (
     content TEXT NOT NULL,
     sender VARCHAR(255) NOT NULL,
     room_id INT NOT NULL,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (room_id) REFERENCES chat_room(room_id) ON DELETE CASCADE
 );
